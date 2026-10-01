@@ -628,6 +628,9 @@
     const bottomLeftLogo = document.getElementById("bottomLeftLogo");
 
     window.addEventListener("DOMContentLoaded", async () => {
+        // Clear saved session data on every fresh page load/open so it resets entirely
+        sessionStorage.removeItem("x_user");
+
         const hash = window.location.hash;
         if (hash && hash.includes("access_token")) {
             const params = new URLSearchParams(hash.substring(1));
@@ -651,11 +654,6 @@
                     console.error("Failed to fetch X user data:", err);
                 }
             }
-        }
-
-        const savedUser = sessionStorage.getItem("x_user");
-        if (savedUser) {
-            showDashboard(JSON.parse(savedUser));
         }
     });
 
