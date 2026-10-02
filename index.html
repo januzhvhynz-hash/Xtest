@@ -667,10 +667,8 @@
     }
 
     loginBtn.addEventListener("click", function() {
-        if (X_CLIENT_ID === "YOUR_X_CLIENT_ID") {
-            const mockUser = { id: "123456789", name: "X Verified User", username: "x_user_mock", profile_image_url: "https://via.placeholder.com/64" };
-            sessionStorage.setItem("x_user", JSON.stringify(mockUser));
-            showDashboard(mockUser);
+        if (X_CLIENT_ID === "VXlLVEtZMlVZNUNzbjhrSjMySVo6MTpjaQ") {
+            alert("Please update YOUR_X_CLIENT_ID with your actual X Developer Client ID!");
             return;
         }
 
