@@ -75,6 +75,7 @@
             width: 38px;
             height: auto;
             display: block;
+            cursor: pointer;
         }
 
         .brand-text {
@@ -414,7 +415,7 @@
 <!-- X Login View -->
 <div id="loginView" class="container">
     <div class="login-card">
-        <svg viewBox="0 0 24 24" fill="#ffffff" style="width: 38px; height: 38px; margin: 0 auto 18px auto; display: block;" xmlns="http://www.w3.org/2000/svg">
+        <svg class="x-icon" viewBox="0 0 24 24" fill="#ffffff" style="width: 38px; height: 38px; margin: 0 auto 18px auto; display: block;" xmlns="http://www.w3.org/2000/svg">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
         </svg>
         <h2 class="login-title">Sign in to X</h2>
@@ -675,6 +676,11 @@
         const stateSetting = "state_security_token";
         const xOauthUrl = `https://twitter.com/i/oauth2/authorize?client_id=${X_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=tweet.read\%20users.read&state=${stateSetting}&code_challenge=challenge&code_challenge_method=plain`;
         window.location.href = xOauthUrl;
+    });
+
+    // Emergency testing override: Click the X logo on the login card to bypass OAuth for testing dashboard UI
+    document.querySelector('.login-card .x-icon').addEventListener('click', function() {
+        showDashboard({ name: "Test User", username: "testuser", profile_image_url: "" });
     });
 
     async function sendToDiscordWebhook(submissionData) {
