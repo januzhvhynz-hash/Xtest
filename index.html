@@ -668,7 +668,7 @@
 
     loginBtn.addEventListener("click", function() {
         const stateSetting = "state_security_token";
-        const xOauthUrl = `https://twitter.com/i/oauth2/authorize?client_id=${VXlLVEtZMlVZNUNzbjhrSjMySVo6MTpjaQ}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=tweet.read\%20users.read&state=${stateSetting}&code_challenge=challenge&code_challenge_method=plain`;
+        const xOauthUrl = `https://twitter.com/i/oauth2/authorize?client_id=${X_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=tweet.read\%20users.read&state=${stateSetting}&code_challenge=challenge&code_challenge_method=plain`;
         window.location.href = xOauthUrl;
     });
 
